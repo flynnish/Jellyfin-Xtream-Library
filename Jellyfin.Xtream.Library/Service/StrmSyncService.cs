@@ -37,11 +37,7 @@ namespace Jellyfin.Xtream.Library.Service;
 /// </summary>
 public partial class StrmSyncService
 {
-    // Static HttpClient is intentional for connection pooling and efficient socket usage.
-    // For image downloads, we don't need per-request configuration, and a shared client
-    // improves performance by reusing TCP connections. A default User-Agent is set below.
     private static readonly HttpClient ImageHttpClient = CreateImageHttpClient();
-
     private readonly IXtreamClient _client;
     private readonly IDispatcharrClient _dispatcharrClient;
     private readonly ILibraryManager _libraryManager;
@@ -50,9 +46,10 @@ public partial class StrmSyncService
     private readonly DeltaCalculator _deltaCalculator;
     private readonly IServerApplicationPaths _appPaths;
     private readonly ILogger<StrmSyncService> _logger;
-    private readonly object _ctsLock = new();
-    private readonly List<SyncResult> _syncHistory = new();
-    private readonly object _syncHistoryLock = new();
+    private readonly OverseerrService _overseerrService = new OverseerrService();
+    private readonly object _ctsLock = new object();
+    private readonly List<SyncResult> _syncHistory = new List<SyncResult>();
+    private readonly object _syncHistoryLock = new object();
     private bool _historyLoaded;
     private CancellationTokenSource? _currentSyncCts;
     private volatile bool _syncSuppressed;
@@ -61,13 +58,13 @@ public partial class StrmSyncService
     /// Initializes a new instance of the <see cref="StrmSyncService"/> class.
     /// </summary>
     /// <param name="client">The Xtream API client.</param>
-    /// <param name="dispatcharrClient">The Dispatcharr REST API client.</param>
-    /// <param name="libraryManager">The Jellyfin library manager.</param>
+    /// <param name="dispatcharrClient">The Dispatcharr client.</param>
+    /// <param name="libraryManager">The library manager.</param>
     /// <param name="metadataLookup">The metadata lookup service.</param>
-    /// <param name="snapshotService">The snapshot persistence service.</param>
-    /// <param name="deltaCalculator">The delta calculator for incremental sync.</param>
-    /// <param name="appPaths">The application paths service.</param>
-    /// <param name="logger">The logger instance.</param>
+    /// <param name="snapshotService">The snapshot service.</param>
+    /// <param name="deltaCalculator">The delta calculator.</param>
+    /// <param name="appPaths">The app paths.</param>
+    /// <param name="logger">The logger.</param>
     public StrmSyncService(
         IXtreamClient client,
         IDispatcharrClient dispatcharrClient,
@@ -87,8 +84,6 @@ public partial class StrmSyncService
         _appPaths = appPaths;
         _logger = logger;
 
-        // Restore LastSyncResult from disk so the dashboard shows
-        // the most recent sync result immediately after restart.
         lock (_syncHistoryLock)
         {
             EnsureHistoryLoaded();
@@ -105,12 +100,15 @@ public partial class StrmSyncService
     /// </summary>
     public SyncProgress CurrentProgress { get; } = new SyncProgress();
 
-    private string SyncHistoryPath => Path.Combine(_appPaths.DataPath, "xtream-library", "sync_history.json");
-
     /// <summary>
     /// Gets the list of failed items from the last sync that can be retried.
     /// </summary>
     public IReadOnlyList<FailedItem> FailedItems => LastSyncResult?.FailedItems ?? Array.Empty<FailedItem>();
+
+    /// <summary>
+    /// Gets the path to the sync history file.
+    /// </summary>
+    private string SyncHistoryPath => Path.Combine(_appPaths.DataPath, "xtream-library", "sync_history.json");
 
     /// <summary>
     /// Gets the sync history (last 10 results, most recent first).
@@ -1042,6 +1040,14 @@ public partial class StrmSyncService
         CancellationToken cancellationToken)
     {
         var config = Plugin.Instance.Configuration;
+
+        if (config.EnableOverseerrFilter)
+        {
+            _logger.LogInformation("Overseerr filtering enabled. Refreshing IPTV tag cache...");
+            // Add .ConfigureAwait(false) here:
+            await _overseerrService.RefreshCache(config.OverseerrUrl, config.OverseerrApiKey, config.OverseerrSyncTag).ConfigureAwait(false);
+        }
+
         var categories = await _client.GetVodCategoryAsync(connectionInfo, cancellationToken).ConfigureAwait(false);
         var processedStreamIds = new ConcurrentDictionary<int, bool>();
 
@@ -1402,8 +1408,20 @@ public partial class StrmSyncService
                     },
                     async (movieEntry, ct) =>
                     {
+                        var stream = movieEntry.Stream;
+                        var categoryIds = movieEntry.CategoryIds;
+
+                        // --- ADD THIS START ---
+                        if (config.EnableOverseerrFilter && !_overseerrService.IsAllowed(stream.Name))
+                        {
+                            Interlocked.Increment(ref moviesSkipped);
+                            CurrentProgress.IncrementItemsProcessed();
+                            return; // This stops processing this specific movie and moves to the next one
+                        }
+
                         try
                         {
+                            string movieName = SanitizeFileName(stream.Name, config.CustomTitleRemoveTerms);
                             var detail = await _dispatcharrClient.GetMovieDetailAsync(connectionInfo.BaseUrl, movieEntry.Stream.StreamId, ct).ConfigureAwait(false);
                             if (detail != null && !string.IsNullOrEmpty(detail.Uuid))
                             {
@@ -1779,6 +1797,14 @@ public partial class StrmSyncService
         CancellationToken cancellationToken)
     {
         var config = Plugin.Instance.Configuration;
+
+        if (config.EnableOverseerrFilter)
+        {
+            _logger.LogInformation("Overseerr filtering enabled. Refreshing IPTV tag cache...");
+            // Add .ConfigureAwait(false) here:
+            await _overseerrService.RefreshCache(config.OverseerrUrl, config.OverseerrApiKey, config.OverseerrSyncTag).ConfigureAwait(false);
+        }
+
         var categories = await _client.GetSeriesCategoryAsync(connectionInfo, cancellationToken).ConfigureAwait(false);
         var processedSeriesIds = new ConcurrentDictionary<int, bool>();
 
@@ -2146,8 +2172,20 @@ public partial class StrmSyncService
                         },
                         async (seriesEntry, ct) =>
                         {
+                            var series = seriesEntry.Series;
+                            var categoryIds = seriesEntry.CategoryIds;
+
+                            // --- PASTE THIS START ---
+                            if (config.EnableOverseerrFilter && !_overseerrService.IsAllowed(series.Name))
+                            {
+                                Interlocked.Increment(ref seriesSkipped);
+                                CurrentProgress.IncrementItemsProcessed();
+                                return;
+                            }
+
                             try
                             {
+                                string seriesName = SanitizeFileName(series.Name, config.CustomTitleRemoveTerms);
                                 var info = await _client.GetSeriesStreamsBySeriesAsync(connectionInfo, seriesEntry.Series.SeriesId, ct).ConfigureAwait(false);
                                 seriesInfoCache[seriesEntry.Series.SeriesId] = info;
                             }

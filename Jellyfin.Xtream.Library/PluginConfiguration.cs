@@ -11,7 +11,7 @@
 // GNU General Public License for more details.
 
 // You should have received a copy of the GNU General Public License
-// along with this program.  If not, see <https://www.gnu.org/licenses/>.
+// along with this program.  See <https://www.gnu.org/licenses/>.
 
 using System;
 using MediaBrowser.Model.Plugins;
@@ -23,6 +23,34 @@ namespace Jellyfin.Xtream.Library;
 /// </summary>
 public class PluginConfiguration : BasePluginConfiguration
 {
+    // =====================
+    // Overseerr / Jellyseerr Settings
+    // =====================
+
+    /// <summary>
+    /// Gets or sets the URL for Overseerr/Jellyseerr.
+    /// </summary>
+    public string OverseerrUrl { get; set; } = "http://localhost:5055";
+
+    /// <summary>
+    /// Gets or sets the API Key for Overseerr/Jellyseerr.
+    /// </summary>
+    public string OverseerrApiKey { get; set; } = string.Empty;
+
+    /// <summary>
+    /// Gets or sets the tag label used to filter sync items.
+    /// </summary>
+    public string OverseerrSyncTag { get; set; } = "IPTV";
+
+    /// <summary>
+    /// Gets or sets a value indicating whether to filter content by Overseerr tags.
+    /// </summary>
+    public bool EnableOverseerrFilter { get; set; } = false;
+
+    // =====================
+    // Xtream Settings
+    // =====================
+
     /// <summary>
     /// Gets or sets the base URL of the Xtream provider (including protocol and port, no trailing slash).
     /// </summary>
