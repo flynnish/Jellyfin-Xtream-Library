@@ -47,7 +47,7 @@ public class Plugin : BasePlugin<PluginConfiguration>, IHasWebPages
     public override string Name => "Xtream Library";
 
     /// <inheritdoc />
-    public override Guid Id => Guid.Parse("a1b2c3d4-e5f6-7890-abcd-ef1234567890");
+    public override Guid Id => Guid.Parse("6b6e85ba-af21-41ad-a56a-d8ff68126f5d");
 
     /// <summary>
     /// Gets the current plugin instance.
