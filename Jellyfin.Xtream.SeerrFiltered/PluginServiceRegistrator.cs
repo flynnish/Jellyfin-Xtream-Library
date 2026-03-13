@@ -32,8 +32,8 @@ public class PluginServiceRegistrator : IPluginServiceRegistrator
     /// <inheritdoc />
     public void RegisterServices(IServiceCollection serviceCollection, IServerApplicationHost applicationHost)
     {
-        serviceCollection.AddHttpClient<IXtreamClient, XtreamClient>();
-        serviceCollection.AddHttpClient<IDispatcharrClient, DispatcharrClient>();
+        serviceCollection.AddHttpClient<IXtreamClient, XtreamClient>("SeerrFiltered.Xtream");
+        serviceCollection.AddHttpClient<IDispatcharrClient, DispatcharrClient>("SeerrFiltered.Dispatcharr");
         serviceCollection.AddSingleton<MetadataCache>();
         serviceCollection.AddSingleton<IMetadataLookupService, MetadataLookupService>();
         serviceCollection.AddSingleton<SnapshotService>();
