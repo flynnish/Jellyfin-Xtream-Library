@@ -44,7 +44,7 @@ public class Plugin : BasePlugin<PluginConfiguration>, IHasWebPages
     }
 
     /// <inheritdoc />
-    public override string Name => "Xtream Library";
+    public override string Name => "Xtream Seerr Filtered";
 
     /// <inheritdoc />
     public override Guid Id => Guid.Parse("6b6e85ba-af21-41ad-a56a-d8ff68126f5d");
