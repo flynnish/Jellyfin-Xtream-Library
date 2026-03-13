@@ -22,7 +22,7 @@ The plugin syncs content from an Xtream-compatible IPTV provider to Jellyfin's n
 ## Project Structure
 
 ```
-Jellyfin.Xtream.Library/
+Jellyfin.Xtream.SeerrFiltered/
 ├── Api/                        # REST API controllers
 │   └── SyncController.cs       # Manual sync & status endpoints
 ├── Client/                     # API clients

@@ -20,7 +20,7 @@ description: |
   This plugin is designed for universal client compatibility, including Swiftfin.
 category: "General"
 artifacts:
-  - "Jellyfin.Xtream.Library.dll"
+  - "Jellyfin.Xtream.SeerrFiltered.dll"
 changelog: |
   ## v1.0.0.0
   - Initial release

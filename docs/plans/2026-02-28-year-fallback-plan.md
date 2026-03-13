@@ -13,8 +13,8 @@
 ### Task 1: Add `FallbackToYearlessLookup` config property
 
 **Files:**
-- Modify: `Jellyfin.Xtream.Library.Tests/PluginConfigurationTests.cs`
-- Modify: `Jellyfin.Xtream.Library/PluginConfiguration.cs`
+- Modify: `Jellyfin.Xtream.SeerrFiltered.Tests/PluginConfigurationTests.cs`
+- Modify: `Jellyfin.Xtream.SeerrFiltered/PluginConfiguration.cs`
 
 **Step 1: Write the failing test**
 
@@ -32,7 +32,7 @@ public void FallbackToYearlessLookup_DefaultIsFalse()
 **Step 2: Run test to verify it fails**
 
 ```bash
-dotnet test Jellyfin.Xtream.Library.Tests -c Release --filter "FallbackToYearlessLookup_DefaultIsFalse" -v normal
+dotnet test Jellyfin.Xtream.SeerrFiltered.Tests -c Release --filter "FallbackToYearlessLookup_DefaultIsFalse" -v normal
 ```
 
 Expected: FAIL — `'PluginConfiguration' does not contain a definition for 'FallbackToYearlessLookup'`
@@ -54,7 +54,7 @@ public bool FallbackToYearlessLookup { get; set; } = false;
 **Step 4: Run test to verify it passes**
 
 ```bash
-dotnet test Jellyfin.Xtream.Library.Tests -c Release --filter "FallbackToYearlessLookup_DefaultIsFalse" -v normal
+dotnet test Jellyfin.Xtream.SeerrFiltered.Tests -c Release --filter "FallbackToYearlessLookup_DefaultIsFalse" -v normal
 ```
 
 Expected: PASS
@@ -62,7 +62,7 @@ Expected: PASS
 **Step 5: Commit**
 
 ```bash
-git add Jellyfin.Xtream.Library/PluginConfiguration.cs Jellyfin.Xtream.Library.Tests/PluginConfigurationTests.cs
+git add Jellyfin.Xtream.SeerrFiltered/PluginConfiguration.cs Jellyfin.Xtream.SeerrFiltered.Tests/PluginConfigurationTests.cs
 git commit -m "feat: add FallbackToYearlessLookup config property (default false)"
 ```
 
@@ -71,8 +71,8 @@ git commit -m "feat: add FallbackToYearlessLookup config property (default false
 ### Task 2: Fallback in `LookupMovieTmdbIdAsync`
 
 **Files:**
-- Modify: `Jellyfin.Xtream.Library.Tests/Service/MetadataLookupServiceTests.cs` (add tests at end of file)
-- Modify: `Jellyfin.Xtream.Library/Service/MetadataLookupService.cs`
+- Modify: `Jellyfin.Xtream.SeerrFiltered.Tests/Service/MetadataLookupServiceTests.cs` (add tests at end of file)
+- Modify: `Jellyfin.Xtream.SeerrFiltered/Service/MetadataLookupService.cs`
 
 **Background on test setup**
 
@@ -87,7 +87,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
-using Jellyfin.Xtream.Library.Service;
+using Jellyfin.Xtream.SeerrFiltered.Service;
 using MediaBrowser.Common.Configuration;
 using MediaBrowser.Controller.Entities.Movies;
 using MediaBrowser.Controller.Providers;
@@ -264,7 +264,7 @@ public async Task LookupMovieTmdbIdAsync_FallbackEnabled_CachesFallbackNull_Avoi
 **Step 4: Run tests to verify they fail**
 
 ```bash
-dotnet test Jellyfin.Xtream.Library.Tests -c Release --filter "LookupMovieTmdbIdAsync" -v normal
+dotnet test Jellyfin.Xtream.SeerrFiltered.Tests -c Release --filter "LookupMovieTmdbIdAsync" -v normal
 ```
 
 Expected: all 4 FAIL — fallback logic doesn't exist yet.
@@ -344,7 +344,7 @@ Replace with:
 **Step 6: Run tests to verify they pass**
 
 ```bash
-dotnet test Jellyfin.Xtream.Library.Tests -c Release --filter "LookupMovieTmdbIdAsync" -v normal
+dotnet test Jellyfin.Xtream.SeerrFiltered.Tests -c Release --filter "LookupMovieTmdbIdAsync" -v normal
 ```
 
 Expected: all 4 PASS
@@ -352,7 +352,7 @@ Expected: all 4 PASS
 **Step 7: Commit**
 
 ```bash
-git add Jellyfin.Xtream.Library/Service/MetadataLookupService.cs Jellyfin.Xtream.Library.Tests/Service/MetadataLookupServiceTests.cs
+git add Jellyfin.Xtream.SeerrFiltered/Service/MetadataLookupService.cs Jellyfin.Xtream.SeerrFiltered.Tests/Service/MetadataLookupServiceTests.cs
 git commit -m "feat: fallback to year-free TMDb lookup when year-qualified search fails"
 ```
 
@@ -361,8 +361,8 @@ git commit -m "feat: fallback to year-free TMDb lookup when year-qualified searc
 ### Task 3: Fallback in `LookupSeriesTvdbIdAsync`
 
 **Files:**
-- Modify: `Jellyfin.Xtream.Library.Tests/Service/MetadataLookupServiceTests.cs` (add 4 more tests)
-- Modify: `Jellyfin.Xtream.Library/Service/MetadataLookupService.cs`
+- Modify: `Jellyfin.Xtream.SeerrFiltered.Tests/Service/MetadataLookupServiceTests.cs` (add 4 more tests)
+- Modify: `Jellyfin.Xtream.SeerrFiltered/Service/MetadataLookupService.cs`
 
 **Step 1: Add required using directives** (if not already present from Task 2):
 
@@ -505,7 +505,7 @@ public async Task LookupSeriesTvdbIdAsync_FallbackEnabled_CachesFallbackNull_Avo
 **Step 3: Run tests to verify they fail**
 
 ```bash
-dotnet test Jellyfin.Xtream.Library.Tests -c Release --filter "LookupSeriesTvdbIdAsync" -v normal
+dotnet test Jellyfin.Xtream.SeerrFiltered.Tests -c Release --filter "LookupSeriesTvdbIdAsync" -v normal
 ```
 
 Expected: all 4 FAIL
@@ -584,7 +584,7 @@ Replace with:
 **Step 5: Run all tests to verify everything passes**
 
 ```bash
-dotnet test Jellyfin.Xtream.Library.Tests -c Release -v normal
+dotnet test Jellyfin.Xtream.SeerrFiltered.Tests -c Release -v normal
 ```
 
 Expected: all tests PASS (was 64 before, should now be 73)
@@ -592,7 +592,7 @@ Expected: all tests PASS (was 64 before, should now be 73)
 **Step 6: Commit**
 
 ```bash
-git add Jellyfin.Xtream.Library/Service/MetadataLookupService.cs Jellyfin.Xtream.Library.Tests/Service/MetadataLookupServiceTests.cs
+git add Jellyfin.Xtream.SeerrFiltered/Service/MetadataLookupService.cs Jellyfin.Xtream.SeerrFiltered.Tests/Service/MetadataLookupServiceTests.cs
 git commit -m "feat: fallback to year-free TVDb lookup when year-qualified series search fails"
 ```
 
@@ -601,8 +601,8 @@ git commit -m "feat: fallback to year-free TVDb lookup when year-qualified serie
 ### Task 4: Config UI — checkbox in `config.html` and `config.js`
 
 **Files:**
-- Modify: `Jellyfin.Xtream.Library/Configuration/Web/config.html`
-- Modify: `Jellyfin.Xtream.Library/Configuration/Web/config.js`
+- Modify: `Jellyfin.Xtream.SeerrFiltered/Configuration/Web/config.html`
+- Modify: `Jellyfin.Xtream.SeerrFiltered/Configuration/Web/config.js`
 
 **Step 1: Add checkbox to `config.html`**
 
@@ -672,7 +672,7 @@ Add the new line immediately after the `EnableMetadataLookup` line:
 **Step 4: Build to verify no compile errors**
 
 ```bash
-dotnet build Jellyfin.Xtream.Library -c Release
+dotnet build Jellyfin.Xtream.SeerrFiltered -c Release
 ```
 
 Expected: Build succeeded, 0 warnings, 0 errors
@@ -680,7 +680,7 @@ Expected: Build succeeded, 0 warnings, 0 errors
 **Step 5: Commit**
 
 ```bash
-git add Jellyfin.Xtream.Library/Configuration/Web/config.html Jellyfin.Xtream.Library/Configuration/Web/config.js
+git add Jellyfin.Xtream.SeerrFiltered/Configuration/Web/config.html Jellyfin.Xtream.SeerrFiltered/Configuration/Web/config.js
 git commit -m "feat: add FallbackToYearlessLookup checkbox to plugin config UI"
 ```
 
@@ -691,19 +691,19 @@ git commit -m "feat: add FallbackToYearlessLookup checkbox to plugin config UI"
 **Step 1: Run the full test suite**
 
 ```bash
-dotnet test Jellyfin.Xtream.Library.Tests -c Release -v normal
+dotnet test Jellyfin.Xtream.SeerrFiltered.Tests -c Release -v normal
 ```
 
 Expected: All tests PASS
 
-**Step 2: Bump the version in `Jellyfin.Xtream.Library.csproj`**
+**Step 2: Bump the version in `Jellyfin.Xtream.SeerrFiltered.csproj`**
 
 Change `AssemblyVersion` and `FileVersion` from current `1.31.35.0` to `1.31.36.0`.
 
 **Step 3: Commit version bump**
 
 ```bash
-git add Jellyfin.Xtream.Library/Jellyfin.Xtream.Library.csproj
+git add Jellyfin.Xtream.SeerrFiltered/Jellyfin.Xtream.SeerrFiltered.csproj
 git commit -m "Release v1.31.36.0: Add year-free metadata lookup fallback option"
 ```
 
@@ -717,9 +717,9 @@ git push origin main --tags
 **Step 5: Build the release package**
 
 ```bash
-dotnet publish Jellyfin.Xtream.Library -c Release -o /tmp/claude/xtream-library-release
+dotnet publish Jellyfin.Xtream.SeerrFiltered -c Release -o /tmp/claude/xtream-library-release
 cd /tmp/claude/xtream-library-release
-zip -j /tmp/claude/jellyfin-xtream-library_1.31.36.0.zip Jellyfin.Xtream.Library.dll
+zip -j /tmp/claude/jellyfin-xtream-library_1.31.36.0.zip Jellyfin.Xtream.SeerrFiltered.dll
 md5 -q /tmp/claude/jellyfin-xtream-library_1.31.36.0.zip
 ```
 

@@ -1,0 +1,69 @@
+// Copyright (C) 2024  Roland Breitschaft
+
+// This program is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+
+// You should have received a copy of the GNU General Public License
+// along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
+using Newtonsoft.Json;
+
+#pragma warning disable CS1591
+namespace Jellyfin.Xtream.SeerrFiltered.Client.Models;
+
+/// <summary>
+/// Represents a live TV stream/channel from the Xtream API.
+/// </summary>
+public class LiveStreamInfo
+{
+    [JsonProperty("num")]
+    public int Num { get; set; }
+
+    [JsonProperty("name")]
+    public string Name { get; set; } = string.Empty;
+
+    [JsonProperty("stream_type")]
+    public string StreamType { get; set; } = string.Empty;
+
+    [JsonProperty("stream_id")]
+    public int StreamId { get; set; }
+
+    [JsonProperty("stream_icon")]
+    public string StreamIcon { get; set; } = string.Empty;
+
+    [JsonProperty("epg_channel_id")]
+    public string EpgChannelId { get; set; } = string.Empty;
+
+    [JsonProperty("added")]
+    public long Added { get; set; }
+
+    [JsonProperty("category_id")]
+    public int? CategoryId { get; set; }
+
+    [JsonProperty("custom_sid")]
+    public string CustomSid { get; set; } = string.Empty;
+
+    [JsonProperty("tv_archive")]
+    [JsonConverter(typeof(StringBoolConverter))]
+    public bool TvArchive { get; set; }
+
+    [JsonProperty("direct_source")]
+    public string DirectSource { get; set; } = string.Empty;
+
+    [JsonProperty("tv_archive_duration")]
+    public int TvArchiveDuration { get; set; }
+
+    [JsonProperty("is_adult")]
+    [JsonConverter(typeof(StringBoolConverter))]
+    public bool IsAdult { get; set; }
+
+    [JsonProperty("stream_stats")]
+    public StreamStatsInfo? StreamStats { get; set; }
+}

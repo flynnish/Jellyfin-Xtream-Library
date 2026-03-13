@@ -7,7 +7,7 @@ A Jellyfin plugin that syncs Xtream VOD and Series content to native Jellyfin li
 ## Project Structure
 
 ```
-Jellyfin.Xtream.Library/
+Jellyfin.Xtream.SeerrFiltered/
 ├── Api/SyncController.cs          # REST API endpoints
 ├── Client/                         # Xtream API client
 │   ├── IXtreamClient.cs
@@ -22,7 +22,7 @@ Jellyfin.Xtream.Library/
 ├── PluginConfiguration.cs          # Settings model
 └── PluginServiceRegistrator.cs     # DI registration
 
-Jellyfin.Xtream.Library.Tests/      # Unit tests (64 tests)
+Jellyfin.Xtream.SeerrFiltered.Tests/      # Unit tests (64 tests)
 docs/                               # Documentation
 ├── REQUIREMENTS.md
 └── ARCHITECTURE.md
@@ -38,13 +38,13 @@ dotnet build -c Release
 dotnet test -c Release
 
 # Publish for release
-dotnet publish Jellyfin.Xtream.Library -c Release -o /tmp/claude/xtream-library-release
+dotnet publish Jellyfin.Xtream.SeerrFiltered -c Release -o /tmp/claude/xtream-library-release
 ```
 
 ## Release Process
 
 ### 1. Update Version
-Edit `Jellyfin.Xtream.Library/Jellyfin.Xtream.Library.csproj`:
+Edit `Jellyfin.Xtream.SeerrFiltered/Jellyfin.Xtream.SeerrFiltered.csproj`:
 ```xml
 <AssemblyVersion>X.Y.Z.0</AssemblyVersion>
 <FileVersion>X.Y.Z.0</FileVersion>
@@ -60,9 +60,9 @@ git push origin main --tags
 
 ### 3. Build Release Package
 ```bash
-dotnet publish Jellyfin.Xtream.Library -c Release -o /tmp/claude/xtream-library-release
+dotnet publish Jellyfin.Xtream.SeerrFiltered -c Release -o /tmp/claude/xtream-library-release
 cd /tmp/claude/xtream-library-release
-zip -j /tmp/claude/jellyfin-xtream-library_X.Y.Z.0.zip Jellyfin.Xtream.Library.dll
+zip -j /tmp/claude/jellyfin-xtream-library_X.Y.Z.0.zip Jellyfin.Xtream.SeerrFiltered.dll
 md5 -q /tmp/claude/jellyfin-xtream-library_X.Y.Z.0.zip  # Get checksum
 ```
 

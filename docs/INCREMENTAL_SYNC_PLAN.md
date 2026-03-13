@@ -724,7 +724,7 @@ displaySyncResult: function(result) {
 ### Phase 7: Testing Strategy
 
 #### Unit Tests
-**File**: `Jellyfin.Xtream.Library.Tests/Service/IncrementalSyncTests.cs`
+**File**: `Jellyfin.Xtream.SeerrFiltered.Tests/Service/IncrementalSyncTests.cs`
 
 ```csharp
 public class IncrementalSyncTests
