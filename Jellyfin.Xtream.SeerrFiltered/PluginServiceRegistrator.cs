@@ -41,6 +41,8 @@ public class PluginServiceRegistrator : IPluginServiceRegistrator
         serviceCollection.AddSingleton<StrmSyncService>();
         serviceCollection.AddSingleton<LiveTvService>();
         serviceCollection.AddSingleton<ITunerHost, XtreamTunerHost>();
-        serviceCollection.AddSingleton<IScheduledTask, SyncLibraryTask>();
+        serviceCollection.AddSingleton<SyncLibraryTask>();
+        serviceCollection.AddSingleton<IScheduledTask>(sp =>
+            sp.GetRequiredService<SyncLibraryTask>());
     }
 }
