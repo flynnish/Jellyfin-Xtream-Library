@@ -90,8 +90,8 @@ public class Plugin : BasePlugin<PluginConfiguration>, IHasWebPages
     {
         return new[]
         {
-            CreateStatic("config.html"),
-            CreateStatic("config.js"),
+            CreateStatic("web_config.html"),
+            CreateStatic("web_config.js"),
         };
     }
 }
