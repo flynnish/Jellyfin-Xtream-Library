@@ -12,16 +12,15 @@ namespace Jellyfin.Xtream.SeerrFiltered.Service;
 /// </summary>
 public class OverseerrService
 {
-    private HashSet<string> _allowedTitles = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+    private HashSet<int> _allowedTmdbIds = new HashSet<int>();
 
     /// <summary>
-    /// Refreshes the local cache of tagged titles from Overseerr.
+    /// Refreshes the local cache of TMDb IDs from Overseerr requests that are not yet available.
     /// </summary>
     /// <param name="url">The Overseerr URL.</param>
     /// <param name="apiKey">The Overseerr API Key.</param>
-    /// <param name="tag">The tag to filter by.</param>
     /// <returns>A task representing the async operation.</returns>
-    public async Task RefreshCache(string url, string apiKey, string tag)
+    public async Task RefreshCache(string url, string apiKey)
     {
         if (string.IsNullOrEmpty(url) || string.IsNullOrEmpty(apiKey))
         {
@@ -32,16 +31,15 @@ public class OverseerrService
         {
             using var client = new HttpClient();
             client.DefaultRequestHeaders.Add("X-Api-Key", apiKey);
-            var response = await client.GetFromJsonAsync<OverseerrResponse>($"{url.TrimEnd('/')}/api/v1/request?take=500&skip=0").ConfigureAwait(false);
 
-            if (response != null && response.Results != null)
+            var response = await client.GetFromJsonAsync<OverseerrResponse>($"{url.TrimEnd('/')}/api/v1/request?take=999&skip=0").ConfigureAwait(false);
+
+            if (response?.Results != null)
             {
-                _allowedTitles = response.Results
-                    .Where(r => (r.Media != null && r.Media.Tags != null && r.Media.Tags.Any(t => t.Label.Equals(tag, StringComparison.OrdinalIgnoreCase))) ||
-                                (r.MediaInfo != null && r.MediaInfo.Tags != null && r.MediaInfo.Tags.Any(t => t.Label.Equals(tag, StringComparison.OrdinalIgnoreCase))))
-                    .Select(r => r.MediaInfo?.Title ?? r.Media?.Title)
-                    .Where(t => !string.IsNullOrEmpty(t))
-                    .ToHashSet(StringComparer.OrdinalIgnoreCase)!;
+                _allowedTmdbIds = response.Results
+                    .Where(r => r.Media != null && (r.Media.Status == 3 || r.Media.Status == 2))
+                    .Select(r => r.Media!.TmdbId)
+                    .ToHashSet();
             }
         }
         catch
@@ -51,18 +49,13 @@ public class OverseerrService
     }
 
     /// <summary>
-    /// Checks if a title is allowed based on the Overseerr cache.
+    /// Checks if a TMDb ID is in the allowed list from Overseerr.
     /// </summary>
-    /// <param name="xtreamName">The name from Xtream Codes.</param>
+    /// <param name="tmdbId">The TMDb ID to check.</param>
     /// <returns>True if allowed.</returns>
-    public bool IsAllowed(string xtreamName)
+    public bool IsAllowed(int tmdbId)
     {
-        if (_allowedTitles.Count == 0)
-        {
-            return false;
-        }
-
-        return _allowedTitles.Any(t => xtreamName.Contains(t, StringComparison.OrdinalIgnoreCase));
+        return _allowedTmdbIds.Contains(tmdbId);
     }
 }
 
@@ -86,11 +79,6 @@ public class OverseerrRequest
     /// Gets or sets media info.
     /// </summary>
     public MediaData? Media { get; set; }
-
-    /// <summary>
-    /// Gets or sets extended media info.
-    /// </summary>
-    public MediaData? MediaInfo { get; set; }
 }
 
 /// <summary>
@@ -99,23 +87,12 @@ public class OverseerrRequest
 public class MediaData
 {
     /// <summary>
-    /// Gets or sets the title.
+    /// Gets or sets the TMDb ID.
     /// </summary>
-    public string? Title { get; set; }
+    public int TmdbId { get; set; }
 
     /// <summary>
-    /// Gets or sets the tags.
+    /// Gets or sets the Overseerr media status.
     /// </summary>
-    public List<Tag>? Tags { get; set; }
-}
-
-/// <summary>
-/// Tag model.
-/// </summary>
-public class Tag
-{
-    /// <summary>
-    /// Gets or sets the label.
-    /// </summary>
-    public string Label { get; set; } = string.Empty;
+    public int Status { get; set; }
 }

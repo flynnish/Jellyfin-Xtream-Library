@@ -4,8 +4,8 @@
     <TargetFramework>net9.0</TargetFramework>
     <AssemblyName>Jellyfin.Xtream.SeerrFiltered</AssemblyName>
     <RootNamespace>Jellyfin.Xtream.SeerrFiltered</RootNamespace>
-    <AssemblyVersion>1.0.0.3</AssemblyVersion>
-    <FileVersion>1.0.0.3</FileVersion>
+    <AssemblyVersion>1.0.0.4</AssemblyVersion>
+    <FileVersion>1.0.0.4</FileVersion>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <Nullable>enable</Nullable>

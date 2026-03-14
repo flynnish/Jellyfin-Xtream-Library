@@ -24,16 +24,16 @@ namespace Jellyfin.Xtream.SeerrFiltered;
 public class PluginConfiguration : BasePluginConfiguration
 {
     // =====================
-    // Overseerr / Jellyseerr Settings
+    // Seerr Settings
     // =====================
 
     /// <summary>
-    /// Gets or sets the URL for Overseerr/Jellyseerr.
+    /// Gets or sets the URL for Seerr.
     /// </summary>
     public string OverseerrUrl { get; set; } = string.Empty;
 
     /// <summary>
-    /// Gets or sets the API Key for Overseerr/Jellyseerr.
+    /// Gets or sets the API Key for Seerr.
     /// </summary>
     public string OverseerrApiKey { get; set; } = string.Empty;
 
