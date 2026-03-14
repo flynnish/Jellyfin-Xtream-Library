@@ -38,7 +38,7 @@ namespace Jellyfin.Xtream.SeerrFiltered.Api;
 /// </summary>
 [ApiController]
 [Authorize(Policy = "RequiresElevation")]
-[Route("XtreamLibrary")]
+[Route("XtreamSeerrFiltered")]
 [Produces(MediaTypeNames.Application.Json)]
 public class SyncController : ControllerBase
 {

@@ -30,7 +30,7 @@ namespace Jellyfin.Xtream.SeerrFiltered.Api;
 /// API controller for Live TV M3U and EPG endpoints.
 /// </summary>
 [ApiController]
-[Route("XtreamLibrary")]
+[Route("XtreamSeerrFiltered")]
 public class LiveTvController : ControllerBase
 {
     private readonly LiveTvService _liveTvService;
