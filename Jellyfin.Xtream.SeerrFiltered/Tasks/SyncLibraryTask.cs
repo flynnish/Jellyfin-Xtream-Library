@@ -43,7 +43,7 @@ public class SyncLibraryTask : IScheduledTask, IConfigurableScheduledTask
     }
 
     /// <inheritdoc />
-    public string Name => "Sync Xtream Library";
+    public string Name => "Sync Xtream Filtered Library";
 
     /// <inheritdoc />
     public string Key => "XtreamLibrarySync";

@@ -217,7 +217,7 @@ Once enabled, go to **Dashboard → Live TV** in Jellyfin — the Xtream Library
 
 ## Scheduled Task
 
-A scheduled task "Sync Xtream Library" runs automatically based on your settings:
+A scheduled task "Sync Xtream Filtered Library" runs automatically based on your settings:
 - **Interval Mode**: Runs every X minutes (configurable, 10-1440)
 - **Daily Mode**: Runs once per day at a specific time
 
