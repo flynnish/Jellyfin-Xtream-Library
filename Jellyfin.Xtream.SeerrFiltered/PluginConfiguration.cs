@@ -30,7 +30,7 @@ public class PluginConfiguration : BasePluginConfiguration
     /// <summary>
     /// Gets or sets the URL for Overseerr/Jellyseerr.
     /// </summary>
-    public string OverseerrUrl { get; set; } = "http://localhost:5055";
+    public string OverseerrUrl { get; set; } = string.Empty;
 
     /// <summary>
     /// Gets or sets the API Key for Overseerr/Jellyseerr.
