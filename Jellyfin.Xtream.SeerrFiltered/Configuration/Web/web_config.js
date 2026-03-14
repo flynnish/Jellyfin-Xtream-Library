@@ -1,5 +1,5 @@
 const XtreamLibraryConfig = {
-    pluginUniqueId: 'a1b2c3d4-e5f6-7890-abcd-ef1234567890',
+    pluginUniqueId: '6b6e85ba-af21-41ad-a56a-d8ff68126f5d',
 
     // Cache for loaded categories
     vodCategories: [],
