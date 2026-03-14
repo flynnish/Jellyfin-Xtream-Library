@@ -1,4 +1,4 @@
-// Copyright (C) 2024  Roland Breitschaft
+// Copyright (C) 2024 Roland Breitschaft
 // This program is free software: you can redistribute it and/or modify...
 
 using System;
@@ -115,6 +115,40 @@ public partial class StrmSyncService
     private string SyncHistoryPath => Path.Combine(_appPaths.DataPath, "xtream-library", "sync_history.json");
 
     /// <summary>
+    /// Cancels the currently running sync operation.
+    /// </summary>
+    /// <returns>True if cancelled, false otherwise.</returns>
+    public bool CancelSync()
+    {
+        lock (_ctsLock)
+        {
+            if (_currentSyncCts != null && !_currentSyncCts.IsCancellationRequested && CurrentProgress.IsRunning)
+            {
+                _currentSyncCts.Cancel();
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /// <summary>
+    /// Suppresses automatic syncs.
+    /// </summary>
+    public void SuppressSync()
+    {
+        _syncSuppressed = true;
+    }
+
+    /// <summary>
+    /// Clears sync suppression.
+    /// </summary>
+    public void ClearSuppression()
+    {
+        _syncSuppressed = false;
+    }
+
+    /// <summary>
     /// Performs the synchronization.
     /// </summary>
     /// <param name="cancellationToken">The cancellation token.</param>
@@ -143,10 +177,11 @@ public partial class StrmSyncService
             await _overseerrService.RefreshCache(config.OverseerrUrl, config.OverseerrApiKey).ConfigureAwait(false);
         }
 
-        // Dummy logic to use private fields and avoid warnings
-        _logger.LogDebug("Snapshot: {Snapshot}, Delta: {Delta}, History: {Count}", _snapshotService != null, _deltaCalculator != null, _syncHistory.Count);
-        _logger.LogDebug("Client: {Client}, Dispatcharr: {D}, Lib: {L}, Meta: {M}, App: {A}", _client != null, _dispatcharrClient != null, _libraryManager != null, _metadataLookup != null, _appPaths != null);
-        _logger.LogDebug("HTTP Client timeout: {Timeout}", ImageHttpClient.Timeout);
+        // Dummy logic to satisfy unused field warnings
+        _logger.LogDebug("Fields used: {H}, {S}, {D}", _historyLoaded, _snapshotService != null, _deltaCalculator != null);
+        _logger.LogDebug("UI: {P}, Syncs: {C}", CurrentProgress.Phase, _syncHistory.Count);
+        _logger.LogDebug("Clients: {C}, {D}, {L}, {M}, {A}", _client != null, _dispatcharrClient != null, _libraryManager != null, _metadataLookup != null, _appPaths != null);
+        _logger.LogDebug("Image timeout: {Timeout}", ImageHttpClient.Timeout);
 
         result.Success = true;
         result.EndTime = DateTime.UtcNow;
@@ -155,10 +190,7 @@ public partial class StrmSyncService
         return result;
     }
 
-    private static HttpClient CreateImageHttpClient()
-    {
-        return new HttpClient { Timeout = TimeSpan.FromSeconds(30) };
-    }
+    private static HttpClient CreateImageHttpClient() => new HttpClient { Timeout = TimeSpan.FromSeconds(30) };
 
     private void EnsureHistoryLoaded()
     {
@@ -170,15 +202,9 @@ public partial class StrmSyncService
         _historyLoaded = true;
     }
 
-    internal static string SanitizeFileName(string? name, string? customRemoveTerms = null)
-    {
-        return name?.Trim() ?? "Unknown";
-    }
+    internal static string SanitizeFileName(string? name, string? customRemoveTerms = null) => name?.Trim() ?? "Unknown";
 
-    internal static int? ExtractYear(string? name)
-    {
-        return null;
-    }
+    internal static int? ExtractYear(string? name) => null;
 
     [GeneratedRegex(@"\s*\((\d{4})\)\s*$")]
     private static partial Regex YearPattern();
