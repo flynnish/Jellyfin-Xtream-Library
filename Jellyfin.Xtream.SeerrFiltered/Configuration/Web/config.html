@@ -286,15 +286,17 @@
                         <div class="verticalSection">
                             <h3 class="sectionTitle">Seerr Credentials</h3>
                             <div class="inputContainer">
-                                <input is="emby-input" type="text" id="txtOverseerrUrl" label="Overseerr/Jellyseerr URL:" />
-                                <div class="fieldDescription">The full URL of your Overseerr/Jellyseerr instance (e.g., http://192.168.1.50:5055).</div>
+                                <label class="inputLabel" for="txtOverseerrUrl">Overseerr/Jellyseerr URL</label>
+                                <input is="emby-input" type="text" id="txtOverseerrUrl" name="OverseerrUrl" placeholder="http://192.168.1.50:5055" />
+                                <div class="fieldDescription">The full URL of your Overseerr/Jellyseerr instance.</div>
                             </div>
                             <div class="inputContainer">
-                                <input is="emby-input" type="password" id="txtOverseerrApiKey" label="Overseerr/API Key:" />
+                                <label class="inputLabel" for="txtOverseerrApiKey">Overseerr API Key</label>
+                                <input is="emby-input" type="password" id="txtOverseerrApiKey" name="OverseerrApiKey" />
                             </div>
                             <div class="checkboxContainer checkboxContainer-withDescription">
                                 <label>
-                                    <input is="emby-checkbox" type="checkbox" id="chkEnableOverseerrFilter" />
+                                    <input is="emby-checkbox" type="checkbox" id="chkEnableOverseerrFilter" name="EnableOverseerrFilter" />
                                     <span>Enable Overseerr Filtering</span>
                                 </label>
                                 <div class="fieldDescription">Only sync content that has been requested/tagged in Overseerr.</div>
